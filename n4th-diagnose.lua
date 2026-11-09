@@ -52,7 +52,7 @@ local function describeFunction(fn)
     end
     return result
 end
-emit("n4th diagnosis v7 | Place=" .. tostring(game.PlaceId) .. " | Version=" .. tostring(game.PlaceVersion))
+emit("NOVA diagnosis v8 | Place=" .. tostring(game.PlaceId) .. " | Version=" .. tostring(game.PlaceVersion))
 do
     local identify = identifyexecutor or getexecutorname
     if type(identify) == "function" then
@@ -277,6 +277,6 @@ local report = table.concat(lines, "\n")
 print(report)
 if type(setclipboard) == "function" then
     local ok = pcall(setclipboard, report)
-    if ok then print("[n4th] Laporan diagnosis sudah disalin. Paste ke chat ini.") end
+    if ok then print("[NOVA] Laporan diagnosis sudah disalin. Paste ke chat ini.") end
 end
 return report
