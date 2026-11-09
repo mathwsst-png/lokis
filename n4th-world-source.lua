@@ -17,7 +17,7 @@ local player = game:GetService("Players").LocalPlayer
 local gui = player and player:FindFirstChild("PlayerGui")
 local playerScripts = player and player:FindFirstChild("PlayerScripts")
 local shared = replicated:FindFirstChild("Shared")
-emit("n4th world API/source v2 | Place=" .. tostring(game.PlaceId) .. " | Version=" .. tostring(game.PlaceVersion))
+emit("NOVA world API/source v3 | Place=" .. tostring(game.PlaceId) .. " | Version=" .. tostring(game.PlaceVersion))
 emit("Queue=" .. type(queue) .. " | decompile=" .. type(decompile) .. " | constants=" .. type(constants))
 
 local function keys(value)
@@ -188,6 +188,6 @@ end
 local report = table.concat(output, "\n")
 if type(writefile) == "function" then pcall(writefile, "n4th-world-source-report.txt", report) end
 local copied = type(setclipboard) == "function" and pcall(setclipboard, report)
-if copied then print("[n4th] Source v2 sudah disalin (" .. #report .. " karakter). Paste ke chat ini.")
+if copied then print("[NOVA] Source v2 sudah disalin (" .. #report .. " karakter). Paste ke chat ini.")
 else print(report) end
 return report
