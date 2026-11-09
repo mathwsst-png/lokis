@@ -60,12 +60,12 @@ function Session.download(url)
             else lastError = tostring(response) end
         end
     end
-    error("[n4th] Unduh gagal: " .. tostring(lastError), 0)
+    error("[NOVA] Unduh gagal: " .. tostring(lastError), 0)
 end
-print("[n4th] Memuat build " .. Session.Build)
+print("[NOVA] Memuat build " .. Session.Build)
 task.delay(45, function()
     if alive() and not Session.Ready then
-        warn("[n4th] Masih memuat: " .. tostring(Session.InitStep)
+        warn("[NOVA] Masih memuat: " .. tostring(Session.InitStep)
             .. ". Kirim baris ini jika menu belum muncul.")
     end
 end)
@@ -101,12 +101,12 @@ do
         task.wait(0.1)
         LocalPlayer = Players.LocalPlayer
     end
-    assert(LocalPlayer, "[n4th] LocalPlayer belum tersedia. Masuk ke game lalu execute ulang.")
+    assert(LocalPlayer, "[NOVA] LocalPlayer belum tersedia. Masuk ke game lalu execute ulang.")
 
     local function requiredChild(parent, name)
         Session.InitStep = parent:GetFullName() .. "/" .. name
         local child = parent:FindFirstChild(name) or parent:WaitForChild(name, 15)
-        assert(child, "[n4th] Tidak menemukan " .. Session.InitStep .. " setelah 15 detik.")
+        assert(child, "[NOVA] Tidak menemukan " .. Session.InitStep .. " setelah 15 detik.")
         return child
     end
     PlayerGui = requiredChild(LocalPlayer, "PlayerGui")
@@ -524,7 +524,7 @@ do
         end
         if value then
             Session.Modules[name] = shapedObject and shapedObject:GetFullName() or "runtime:" .. name
-            print("[n4th] " .. name .. " dikenali dari data: " .. Session.Modules[name])
+            print("[NOVA] " .. name .. " dikenali dari data: " .. Session.Modules[name])
             return true, value, shapedObject
         end
         if object then
@@ -536,11 +536,11 @@ do
             end
             reason = ok and "hasil require bukan tabel" or tostring(result)
         end
-        local message = "[n4th] Modul " .. name .. ": " .. (reason or (required and "tidak ditemukan setelah pencarian 30 detik" or "tidak ditemukan"))
+        local message = "[NOVA] Modul " .. name .. ": " .. (reason or (required and "tidak ditemukan setelah pencarian 30 detik" or "tidak ditemukan"))
         if required then
             Session.BootstrapReport = report()
-            warn("[n4th] Struktur client: " .. Session.BootstrapReport)
-            warn(("[n4th] Pemindaian data: tabel=%d | export=%d | gagal=%d | terakhir=%s"):format(
+            warn("[NOVA] Struktur client: " .. Session.BootstrapReport)
+            warn(("[NOVA] Pemindaian data: tabel=%d | export=%d | gagal=%d | terakhir=%s"):format(
                 Session.ModuleScan.Tables, Session.ModuleScan.Loaded, Session.ModuleScan.Errors, tostring(Session.ModuleScan.LastError)))
             error(message .. ". Jalankan n4th-diagnose.lua untuk membaca struktur client terbaru.", 0)
         end
@@ -609,11 +609,11 @@ do
                     if compiled and type(fn) == "function" then return fn end
                     lastError = tostring(compiled and compileError or fn)
                 end
-                warn("[n4th] Unduh WindUI gagal: " .. url .. " | " .. lastError)
+                warn("[NOVA] Unduh WindUI gagal: " .. url .. " | " .. lastError)
             end
             if attempt < 2 then task.wait(1) end
         end
-        error("[n4th] WindUI gagal diunduh setelah mencoba kedua URL: " .. lastError, 0)
+        error("[NOVA] WindUI gagal diunduh setelah mencoba kedua URL: " .. lastError, 0)
     end
 
     -- Inisialisasi hanya sekali, setelah respons berhasil dikompilasi.
@@ -669,7 +669,7 @@ local Misc = {
     UpHeld = false,   -- tombol ▲ di layar ditahan
     DownHeld = false, -- tombol ▼ di layar ditahan
     CustomName = true,          -- watermark nama (selalu aktif, mati hanya saat script ditutup)
-    NameText = "n4th",  -- teks watermark
+    NameText = "NOVA",  -- teks watermark
 }
 
 -- Auto Clear World
@@ -941,7 +941,7 @@ function UI.runJobs()
         if job and now >= job.at then
             UI.Jobs[key] = nil
             local ok, err = pcall(job.fn)
-            if not ok then warn("[n4th] UI job " .. tostring(key) .. ": " .. tostring(err)) end
+            if not ok then warn("[NOVA] UI job " .. tostring(key) .. ": " .. tostring(err)) end
         end
     end
 end
@@ -1325,7 +1325,7 @@ I18N.EN = {
     ["Isi URL webhook dulu"] = "Fill in the webhook URL first",
     ["Pesan tes masuk antrian"] = "Test message queued",
     ["URL webhook tidak valid"] = "Invalid webhook URL",
-    ["Tes notifikasi dari n4th"] = "Test notification from n4th",
+    ["Tes notifikasi dari NOVA"] = "Test notification from NOVA",
     -- pilihan dropdown
     ["Kiri → Kanan"] = "Left → Right", ["Semua pemain"] = "All players", ["Semua"] = "All",
     ["Depan"] = "Front", ["Break saja"] = "Break only", ["Place saja"] = "Place only",
@@ -1967,7 +1967,7 @@ do (function()
                     Hook.Status = "Executor tidak punya fungsi request"
                 else
                     local body = HttpService:JSONEncode({
-                        username = "n4th",
+                        username = "NOVA",
                         content = ("**[%s]** %s"):format(LocalPlayer.Name, text),
                     })
                     local ok, res = pcall(req, {
@@ -2515,7 +2515,7 @@ local function sendSetTile(layer, x, y, id)
     if Refs.SetTile then
         local ok, err = pcall(Refs.SetTile, layer, x, y, id, false, false)
         if ok then return true end
-        warn("[n4th] setTile game gagal, pakai remote langsung: " .. tostring(err))
+        warn("[NOVA] setTile game gagal, pakai remote langsung: " .. tostring(err))
     end
     if NetOk and type(Net) == "table" and type(Net.tile) == "table" then
         -- sama seperti game: layer 1 = fg, 2 = bg
@@ -3066,7 +3066,7 @@ task.spawn(function()
         local ok, err = pcall(collectTick)
         if not ok and os.clock() - (Drops.LastErrorAt or -10) >= 10 then
             Drops.LastErrorAt = os.clock()
-            warn("[n4th] Collect: " .. tostring(err))
+            warn("[NOVA] Collect: " .. tostring(err))
         end
         task.wait(0.05)
     end
@@ -5274,7 +5274,7 @@ local function startClear(targetId)
     task.spawn(function()
         local ok, e = pcall(clearLoop)
         if not ok then
-            warn("[n4th] Auto Clear error: " .. tostring(e))
+            warn("[NOVA] Auto Clear error: " .. tostring(e))
             if Clear.Running then stopClear("Error: " .. tostring(e)) end
         end
     end)
@@ -6003,7 +6003,7 @@ local function startFarmer()
     task.spawn(function()
         local ok, e = pcall(farmerLoop)
         if not ok then
-            warn("[n4th] Farmer error: " .. tostring(e))
+            warn("[NOVA] Farmer error: " .. tostring(e))
             if Farmer.Running then stopFarmer("Error: " .. tostring(e)) end
         end
     end)
@@ -6206,7 +6206,7 @@ local function startSpliceRoam()
     task.spawn(function()
         local ok, e = pcall(spliceRoamLoop, id)
         if not ok then
-            warn("[n4th] Splice error: " .. tostring(e))
+            warn("[NOVA] Splice error: " .. tostring(e))
             if Splice.Running and Splice.stop then Splice.stop("Error: " .. tostring(e)) end
         end
     end)
@@ -6521,7 +6521,7 @@ local function pabrikBreak(o)
     end)
     Pabrik.Status = "Break " .. itemName(o.block) .. " di posisi pabrik"
     local ok, e = pcall(farmLoop, id)
-    if not ok then warn("[n4th] Pabrik break error: " .. tostring(e)) end
+    if not ok then warn("[NOVA] Pabrik break error: " .. tostring(e)) end
     State.Running = false
     State.Override = nil
     State.Quiet = false
@@ -6937,7 +6937,7 @@ do
                 if not ok then
                     AutoDrop.Status = tostring(err)
                     AutoDrop.NextTry = os.clock() + 10
-                    warn("[n4th] Auto Drop: " .. tostring(err))
+                    warn("[NOVA] Auto Drop: " .. tostring(err))
                 end
             end
         end
@@ -7193,7 +7193,7 @@ function Pabrik.start()
     task.spawn(function()
         local ok, e = pcall(pabrikLoop, id)
         if not ok then
-            warn("[n4th] Pabrik error: " .. tostring(e))
+            warn("[NOVA] Pabrik error: " .. tostring(e))
             if Pabrik.Running then Pabrik.stop("Error: " .. tostring(e)) end
         end
     end)
@@ -7896,7 +7896,7 @@ function Vend.start()
     task.spawn(function()
         local ok, e = pcall(vendLoop, id)
         if not ok then
-            warn("[n4th] Vending error: " .. tostring(e))
+            warn("[NOVA] Vending error: " .. tostring(e))
             if Vend.Running then Vend.stop("Error: " .. tostring(e)) end
         end
     end)
@@ -8481,7 +8481,7 @@ function Build.breakSession(o)
     end)
     Build.Status = ("Break %s di posisi break lahan (%d,%d)"):format(itemName(o.block), Build.BreakX, Build.BreakY)
     local ok, e = pcall(farmLoop, id)
-    if not ok then warn("[n4th] Break lahan error: " .. tostring(e)) end
+    if not ok then warn("[NOVA] Break lahan error: " .. tostring(e)) end
     State.Running = false
     State.Override = nil
     State.Quiet = false
@@ -8858,7 +8858,7 @@ function Build.start()
     task.spawn(function()
         local ok, e = pcall(buildLoop, id)
         if not ok then
-            warn("[n4th] Bangun Lahan error: " .. tostring(e))
+            warn("[NOVA] Bangun Lahan error: " .. tostring(e))
             if Build.Running then Build.stop("Error: " .. tostring(e)) end
         end
     end)
@@ -8986,13 +8986,11 @@ local TextService = game:GetService("TextService")
 local NameFx = { t0 = os.clock() }
 
 local NAME_COLORS = ColorSequence.new({
-    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 90, 255)),  -- ungu
-    ColorSequenceKeypoint.new(0.25, Color3.fromRGB(60, 205, 255)),  -- biru muda
-    ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 110, 210)), -- pink
-    ColorSequenceKeypoint.new(0.75, Color3.fromRGB(60, 205, 255)),
-    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(170, 90, 255)),
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(76, 175, 125)),
+    ColorSequenceKeypoint.new(0.50, Color3.fromRGB(145, 220, 175)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(76, 175, 125)),
 })
-local NAME_FONT = Enum.Font.FredokaOne
+local NAME_FONT = Enum.Font.GothamSemibold
 
 -- Tempat nama: di atas karakter & panel kiri atas
 local function nameHolders()
@@ -9012,7 +9010,7 @@ end
 
 local function makeLabel(holder, size, isTag)
     local lb = Instance.new("TextLabel")
-    lb.Name = "n4thName"
+    lb.Name = "novaName"
     lb.BackgroundTransparency = 1
     lb.Font = NAME_FONT
     lb.TextSize = size
@@ -9471,7 +9469,7 @@ do (function()
     end
     local ok = pcall(function()
         WindUI:Popup({
-            Title = "n4th",
+            Title = "NOVA",
             Icon = "languages",
             Content = "Pilih bahasa menu\nChoose menu language",
             Buttons = {
@@ -9491,14 +9489,14 @@ end)() end
 
 Session.InitStep = "membuat menu WindUI"
 local Window = I18N.wrap(WindUI:CreateWindow({
-    Title = "n4th",
-    Icon = "sprout",
-    Author = "v5.9.0 | Tester",
+    Title = "NOVA",
+    Icon = "orbit",
+    Author = "Minimal Utility | v5.9.0",
     Folder = "n4thOpus",
-    Size = UDim2.fromOffset(640, 380),
+    Size = UDim2.fromOffset(600, 390),
     Theme = "Dark",
     Transparent = true,
-    SideBarWidth = 150,
+    SideBarWidth = 138,
     ToggleKey = Enum.KeyCode.Insert,  -- PC: tekan Insert untuk buka/tutup menu
 }))
 UI.Window = Window
@@ -9506,8 +9504,8 @@ UI.Window = Window
 -- Cadangan PC: kalau tombol susah dicari, tekan Insert.
 pcall(function()
     Window:EditOpenButton({
-        Title = "n4th",
-        Icon = "sprout",
+        Title = "NOVA",
+        Icon = "orbit",
         Draggable = true,
         OnlyMobile = false,
     })
@@ -9516,7 +9514,7 @@ end)
 -- Kalau 1 elemen error, tab lain tetap dibuat
 local function safe(fn)
     local ok, err = pcall(fn)
-    if not ok then warn("[n4th] UI error: " .. tostring(err)) end
+    if not ok then warn("[NOVA] UI error: " .. tostring(err)) end
 end
 
 -- Sidebar dikelompokkan: grup utama bisa dibuka / ditutup (isinya tab-tab)
@@ -9693,7 +9691,7 @@ do (function()
             UI.WorldBreakRefreshing = false
             if not refreshed then error(message, 0) end
         end)
-        if ok then signature = current else warn("[n4th] Daftar block world: " .. tostring(err)) end
+        if ok then signature = current else warn("[NOVA] Daftar block world: " .. tostring(err)) end
     end
     safe(function()
         controls:Button({ Title = "Refresh block world", Desc = "Baca ulang jenis dan jumlah block dari world aktif.",
@@ -10492,7 +10490,7 @@ do (function() -- fungsi sendiri: variabel di dalam tidak ikut batas 200 local
         Guard.BackText = nil
         task.spawn(function()
             local ok, err = pcall(resumeAll, saved, token)
-            if not ok then warn("[n4th] Penjaga lanjut error: " .. tostring(err)) end
+            if not ok then warn("[NOVA] Penjaga lanjut error: " .. tostring(err)) end
             if Guard.Token == token and Guard.Mode == "back" then
                 Guard.Mode, Guard.Saved, Guard.BackText = "idle", nil, nil
             end
@@ -10727,7 +10725,7 @@ do (function() -- fungsi sendiri: variabel di dalam tidak ikut batas 200 local
         while alive() do
             local here = (Guard.Mode ~= "away" and Guard.Mode ~= "out") and playersHere() or {}
             local ok, err = pcall(Guard.tick, here)
-            if not ok then warn("[n4th] Penjaga error: " .. tostring(err)) end
+            if not ok then warn("[NOVA] Penjaga error: " .. tostring(err)) end
             Guard.updateStatus(here)
             task.wait(0.5)
         end
@@ -12236,7 +12234,7 @@ do (function()
             return Vend.labels(m)
         end)
         if not ok then
-            warn("[n4th] daftar item vending error: " .. tostring(labels))
+            warn("[NOVA] daftar item vending error: " .. tostring(labels))
             return 0, "error: " .. tostring(labels)
         end
         local info = ("tas %d | drop %d | vending %d"):format(st.inv, st.drop, st.vend)
@@ -12249,7 +12247,7 @@ do (function()
             end)
             if not okR then
                 Vend.ItemSig = nil
-                warn("[n4th] refresh dropdown item vending gagal: " .. tostring(errR))
+                warn("[NOVA] refresh dropdown item vending gagal: " .. tostring(errR))
                 notify("Vending", "Daftar item gagal dimuat: " .. tostring(errR), 6)
                 return
             end
@@ -12847,7 +12845,7 @@ if not globals.__n4thFinderBooting then
             end)
         end
         globals.__n4thFinderBooting = nil
-        if not ran then warn("[n4th] Gagal lanjut setelah teleport: " .. tostring(err)) end
+        if not ran then warn("[NOVA] Gagal lanjut setelah teleport: " .. tostring(err)) end
     end)
 end
 ]=]
@@ -12878,7 +12876,7 @@ end
         if not saved then return false, "Gagal menyimpan antrean teleport: " .. tostring(reason) end
         if WorldFinder.Queued then return true end
         local queue = queue_on_teleport or queueonteleport or (syn and syn.queue_on_teleport) or (fluxus and fluxus.queue_on_teleport)
-        if type(queue) ~= "function" then return false, "Executor tidak mendukung auto-execute setelah teleport. Execute n4th lagi untuk lanjut." end
+        if type(queue) ~= "function" then return false, "Executor tidak mendukung auto-execute setelah teleport. Execute NOVA lagi untuk lanjut." end
         local ok, err = pcall(queue, bootSource)
         WorldFinder.Queued = ok
         return ok, not ok and ("Auto-execute gagal disiapkan: " .. tostring(err)) or nil
@@ -13386,7 +13384,7 @@ do (function()
                     notify("World Finder", "Aktifkan notifikasi dan isi URL webhook dulu", 4)
                     return
                 end
-                Hook.send("finder", "World Finder siap mengirim hasil hunting dari n4th")
+                Hook.send("finder", "World Finder siap mengirim hasil hunting dari NOVA")
                 notify("World Finder", "Pesan tes masuk antrian", 3)
             end,
         })
@@ -13520,7 +13518,7 @@ local function reconnect(show)
     end
     -- 2) scan lengkap
     findRefs()
-    if Refs.ScanError then warn("[n4th] " .. Refs.ScanError) end
+    if Refs.ScanError then warn("[NOVA] " .. Refs.ScanError) end
     watchInventory()
     pcall(doInvRefresh, true) -- langsung di thread ini (thread INIT / antrian UI), bukan thread tombol
     findDropRefs(true)
@@ -13532,7 +13530,7 @@ local function reconnect(show)
     if Misc.InfJump then hookJammer() end
     pcall(function() UI.RefInfo:SetDesc(refsText()) end)
     updateStatus()
-    print("[n4th] " .. Session.Build .. " | scanned=" .. tostring(Refs.ScanCount) .. " | " .. refsText())
+    print("[NOVA] " .. Session.Build .. " | scanned=" .. tostring(Refs.ScanCount) .. " | " .. refsText())
     if show then notify(show, refsText(), 5) end
 end
 
@@ -13752,7 +13750,7 @@ do (function()
                 end
                 local was = Hook.On
                 Hook.On = true
-                Hook.send("test", "Tes notifikasi dari n4th")
+                Hook.send("test", "Tes notifikasi dari NOVA")
                 Hook.On = was
                 notify("Discord", "Pesan tes masuk antrian", 3)
             end,
@@ -13799,7 +13797,7 @@ do
     task.spawn(function()
         while alive() do
             local ok, err = pcall(UI.runJobs)
-            if not ok then warn("[n4th] UI runner: " .. tostring(err)) end
+            if not ok then warn("[NOVA] UI runner: " .. tostring(err)) end
             task.wait(0.1)
         end
     end)
@@ -13821,12 +13819,12 @@ task.spawn(function()
                 if Refs.Inv then pcall(watchInventory) end
                 pcall(function() UI.RefInfo:SetDesc(refsText()) end)
                 if Refs.Punch then
-                    print("[n4th] Fungsi pukul ditemukan setelah input game siap.")
+                    print("[NOVA] Fungsi pukul ditemukan setelah input game siap.")
                     return
                 end
             end
             if alive() and not Refs.Punch then
-                warn("[n4th] Pukul belum ditemukan setelah mencoba GC dan koneksi input. Jalankan n4th-diagnose.lua untuk laporan API executor.")
+                warn("[NOVA] Pukul belum ditemukan setelah mencoba GC dan koneksi input. Jalankan n4th-diagnose.lua untuk laporan API executor.")
             end
         end)
     end
@@ -13914,4 +13912,4 @@ end
 
 Session.InitStep = "siap"
 Session.Ready = true
-print("[n4th] Menu siap (build " .. Session.Build .. ")")
+print("[NOVA] Menu siap (build " .. Session.Build .. ")")
